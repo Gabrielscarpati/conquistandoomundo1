@@ -1,10 +1,15 @@
-import 'package:conquistandoomundo/features/bemVindoScreen/viewBemVindo.dart';
+import 'package:conquistandoomundo/pages/LogInScreen/viewLogInScreen.dart';
+import 'package:conquistandoomundo/pages/cadastro/fireBaseAuthCadastroScreen.dart';
+import 'package:conquistandoomundo/pages/home/home_view.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
 
-import 'features/homeScreen/viewHomeScreen.dart';
-import 'features/pergunta1/viewPergunta1.dart';
-
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -15,14 +20,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-
-        primarySwatch: Colors.blue,
-      ),
-      home: ViewHomeScreen(),
-    );
+        title: 'Conquistando o mundo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: StreamBuilder(
+            stream: AuthServiceCadasto().firebaseAuth.authStateChanges(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return const Home();
+              }
+              return const ViewLogInScreen();
+            }));
   }
 }
-
-//2560 x 1600
